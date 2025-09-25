@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.rsocket.RSocketSecurityAutoConfiguration;
 
 @SpringBootApplication(exclude = {RSocketSecurityAutoConfiguration.class})
-public class SafehubApplication {
+public class SmarMottuApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SafehubApplication.class, args);
+		SpringApplication.run(SmarMottuApplication.class, args);
 	}
 }
