@@ -1,5 +1,6 @@
 package br.com.fiap.smartmottu.entity;
 
+import br.com.fiap.smartmottu.entity.enuns.TipoMotoEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,5 +22,6 @@ public class TipoMoto {
     private Long idTipo;
 
     @Column(name = "nm_tipo")
-    private String nmTipo;
+    @Enumerated(EnumType.STRING)
+    private TipoMotoEnum nmTipo;
 }

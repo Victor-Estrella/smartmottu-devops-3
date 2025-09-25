@@ -1,5 +1,6 @@
 package br.com.fiap.smartmottu.entity;
 
+import br.com.fiap.smartmottu.entity.enuns.StatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class StatusMoto {
     private Long idStatus;
 
     @Column(name = "status")
-    private String status;
+    private StatusEnum status;
 
     @Column(name = "data")
     private LocalDate data;
