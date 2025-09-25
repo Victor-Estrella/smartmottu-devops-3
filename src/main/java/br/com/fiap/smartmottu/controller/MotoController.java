@@ -2,9 +2,8 @@ package br.com.fiap.smartmottu.controller;
 
 import br.com.fiap.smartmottu.dto.MotoRequestDto;
 import br.com.fiap.smartmottu.dto.MotoResponseDto;
-import br.com.fiap.smartmottu.entity.enuns.StatusEnum;
-import br.com.fiap.smartmottu.entity.enuns.TipoMotoEnum;
 import br.com.fiap.smartmottu.repository.TipoMotoRepository;
+import br.com.fiap.smartmottu.repository.StatusMotoRepository;
 import br.com.fiap.smartmottu.service.MotoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,9 @@ public class MotoController {
     @Autowired
     private TipoMotoRepository tipoMotoRepository;
 
+    @Autowired
+    private StatusMotoRepository statusMotoRepository;
+
     @GetMapping
     public String listMotos(Model model) {
         var motos = service.getAll();
@@ -32,8 +34,9 @@ public class MotoController {
     @GetMapping("/new")
     public String newMotosForm(Model model) {
         model.addAttribute("moto", new MotoRequestDto());
-        model.addAttribute("modeloList", TipoMotoEnum.values());
-        model.addAttribute("statusList", StatusEnum.values());
+        // Carrega opções a partir do banco (IDs reais para binding)
+        model.addAttribute("modeloList", tipoMotoRepository.findAll());
+        model.addAttribute("statusList", statusMotoRepository.findAll());
         return "form-moto";
     }
 
@@ -56,6 +59,8 @@ public class MotoController {
 
         model.addAttribute("moto", dto);
         model.addAttribute("id", id);
+        model.addAttribute("modeloList", tipoMotoRepository.findAll());
+        model.addAttribute("statusList", statusMotoRepository.findAll());
 
         return "form-moto";
     }
