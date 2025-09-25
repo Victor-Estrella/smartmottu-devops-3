@@ -23,6 +23,7 @@ public class StatusMoto {
     private Long idStatus;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
     @Column(name = "data")

@@ -30,12 +30,10 @@ public class Moto {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "fk_id_status")
-    @Enumerated(EnumType.STRING)
     private StatusMoto status;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "fk_id_tipo")
-    @Enumerated(EnumType.STRING)
     private TipoMoto modelo;
 
 
