@@ -25,7 +25,7 @@ public class MotoResponseDto {
                 .placa(moto.getPlaca())
                 .unidade(moto.getUnidade())
                 .statusId(moto.getStatus() != null ? moto.getStatus().getIdStatus() : null)
-                .modeloId(moto.getModelo() != null ? Long.valueOf(moto.getModelo().getNmTipo().getDescricao()) : null)
+                .modeloId(moto.getModelo() != null ? moto.getModelo().getIdTipo() : null)
                 .build();
     }
 

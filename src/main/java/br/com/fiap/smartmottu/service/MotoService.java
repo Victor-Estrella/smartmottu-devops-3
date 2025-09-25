@@ -89,8 +89,8 @@ public class MotoService {
         dto.setNmChassi(moto.getNmChassi());
         dto.setPlaca(moto.getPlaca());
         dto.setUnidade(moto.getUnidade());
-        dto.setStatusId(moto.getStatus() != null ? Long.valueOf(moto.getStatus().getStatus().getDescricao()) : null);
-        dto.setModeloId(moto.getModelo() != null ? Long.valueOf(moto.getModelo().getNmTipo().getDescricao()) : null);
+        dto.setStatusId(moto.getStatus() != null ? moto.getStatus().getIdStatus() : null);
+        dto.setModeloId(moto.getModelo() != null ? moto.getModelo().getIdTipo() : null);
         return dto;
     }
 }
