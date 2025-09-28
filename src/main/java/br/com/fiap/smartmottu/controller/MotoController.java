@@ -2,8 +2,8 @@ package br.com.fiap.smartmottu.controller;
 
 import br.com.fiap.smartmottu.dto.MotoRequestDto;
 import br.com.fiap.smartmottu.dto.MotoResponseDto;
-import br.com.fiap.smartmottu.entity.enuns.StatusEnum;
-import br.com.fiap.smartmottu.entity.enuns.TipoMotoEnum;
+import br.com.fiap.smartmottu.repository.StatusMotoRepository;
+import br.com.fiap.smartmottu.repository.TipoMotoRepository;
 import br.com.fiap.smartmottu.service.MotoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,12 @@ public class MotoController {
     @Autowired
     private MotoService service;
 
+    @Autowired
+    private StatusMotoRepository statusMotoRepository;
+
+    @Autowired
+    private TipoMotoRepository tipoMotoRepository;
+
     @GetMapping
     public String listMotos(Model model) {
         var motos = service.getAll();
@@ -28,9 +34,8 @@ public class MotoController {
     @GetMapping("/new")
     public String newMotosForm(Model model) {
         model.addAttribute("moto", new MotoRequestDto());
-
-        model.addAttribute("statusList", StatusEnum.values());
-        model.addAttribute("modeloList", TipoMotoEnum.values());
+        model.addAttribute("statusList", statusMotoRepository.findAll());
+        model.addAttribute("modeloList", tipoMotoRepository.findAll());
         return "form-moto";
     }
 
@@ -54,9 +59,8 @@ public class MotoController {
 
         model.addAttribute("moto", dto);
         model.addAttribute("id", id);
-
-        model.addAttribute("statusList", StatusEnum.values());
-        model.addAttribute("modeloList", TipoMotoEnum.values());
+        model.addAttribute("statusList", statusMotoRepository.findAll());
+        model.addAttribute("modeloList", tipoMotoRepository.findAll());
 
         return "form-moto";
     }
