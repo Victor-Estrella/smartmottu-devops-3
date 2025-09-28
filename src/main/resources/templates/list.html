@@ -1,50 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Usuários</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Lista de Usuários</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
 
-<h1>Lista de Usuários</h1>
+        <h1>Lista de Usuários</h1>
 
-<div class="container-link">
-    <a th:href="@{/users/new}" class="btn btn-new">Cadastrar Novo Usuário</a>
-</div>
+        <div class="container-link">
+            <a th:href="@{/users/new}" class="btn btn-new">Cadastrar Novo Usuário</a>
+        </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>E-mail</th>
-        <th>Senha</th>
-        <th>Ações</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="u : ${users}">
-        <td th:text="${u.idUsuario}"></td>
-        <td th:text="${u.nome}"></td>
-        <td th:text="${u.email}"></td>
-        <td th:text="${u.senha}"></td>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Senha</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="u : ${users}">
+                    <td th:text="${u.idUsuario}"></td>
+                    <td th:text="${u.nome}"></td>
+                    <td th:text="${u.email}"></td>
+                    <td th:text="${u.senha}"></td>
 
-        <td>
-            <a class="btn btn-edit"
-               th:href="@{/users/{id}/edit(id=${u.idUsuario})}">
-                Editar
-            </a>
+                    <td>
+                        <a th:href="@{/home}" class="btn btn-home">Home</a>
 
-            <form th:action="@{/users/{id}(id=${u.idUsuario})}"
-                  method="post" style="display:inline">
-                <input type="hidden" name="_method" value="delete"/>
-                <button class="btn btn-delete" type="submit">Excluir</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                        <a class="btn btn-edit" th:href="@{/users/{id}/edit(id=${u.idUsuario})}">
+                            Editar
+                        </a>
 
-</body>
+                        <form th:action="@{/users/{id}(id=${u.idUsuario})}" method="post" style="display:inline">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button class="btn btn-delete" type="submit">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
 </html>

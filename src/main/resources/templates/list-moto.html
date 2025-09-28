@@ -31,10 +31,13 @@
         <td th:text="${m.nmChassi}"></td>
         <td th:text="${m.placa}"></td>
         <td th:text="${m.unidade}"></td>
-    <td th:text="${m.statusName}"></td>
-    <td th:text="${m.modeloName}"></td>
+        <td th:text="${m.statusId}"></td>
+        <td th:text="${m.modeloId}"></td>
 
         <td>
+
+            <a th:href="@{/home}" class="btn btn-home">Home</a>
+
             <a class="btn btn-edit"
                th:href="@{/motos/{id}/edit(id=${m.idMoto})}">
                 Editar
