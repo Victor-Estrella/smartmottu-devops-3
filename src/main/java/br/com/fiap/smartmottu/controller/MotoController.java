@@ -43,7 +43,7 @@ public class MotoController {
     @PostMapping
     public String saveMoto(@Valid @ModelAttribute("moto") MotoRequestDto dto) {
         service.save(dto);
-        return "redirect:/home";
+        return "redirect:/";
     }
 
     @GetMapping("/{id}/edit")
@@ -69,7 +69,7 @@ public class MotoController {
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("moto") MotoRequestDto dto) {
         service.update(id, dto);
-        return "redirect:/home";
+        return "redirect:/";
     }
 
     @DeleteMapping("/{id}")
