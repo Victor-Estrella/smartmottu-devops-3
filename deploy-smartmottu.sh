@@ -99,7 +99,6 @@ CREATE TABLE T_SMARTMOTTU_MOTO (
     CONSTRAINT FK_MOTO_USUARIO FOREIGN KEY (fk_id_usuario) REFERENCES T_SMARTMOTTU_USUARIO(id_usuario)
 );
 
--- Tabela de Aluguel
 CREATE TABLE T_SMARTMOTTU_ALUGUEL (
     id_aluguel   BIGINT NOT NULL PRIMARY KEY DEFAULT NEXT VALUE FOR SQ_T_SMARTMOTTU_ALUGUEL,
     fk_usuario_id BIGINT NOT NULL,
@@ -128,12 +127,7 @@ INSERT INTO T_SMARTMOTTU_TIPO_MOTO (nm_tipo) VALUES ('MOTTU_POP_100');
 INSERT INTO T_SMARTMOTTU_TIPO_MOTO (nm_tipo) VALUES ('MOTTU_POP_150');
 INSERT INTO T_SMARTMOTTU_TIPO_MOTO (nm_tipo) VALUES ('MOTTU_ELETRICA_X');
 
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Mauricio Silva', 'mauricio@gmail.com', '{noop}senha123', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Rodrigo Vieira', 'rodrigo@gmail.com', '{noop}senha456', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Renato Souza', 'renato@gmail.com', '{noop}7852578', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Maria Dantas', 'maria@gmail.com', '{noop}abcdef', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Joao Pedro', 'joao@gmail.com', '{noop}123456', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Administrador', 'admin@email.com', '{bcrypt}$2a$10$veKob3hpyAUsj3R7x4QFgOc8R4I6DrHU9aTmANETcCq.Xgy4NCgmW', 'ADMIN');
+INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Administrador','admin@email.com','admin123','ADMIN');
 
 INSERT INTO T_SMARTMOTTU_MOTO (nm_chassi, placa, unidade, fk_id_status, fk_id_tipo) VALUES ('9MCNSL953VV182782', 'HMK9012', 'Bras', 1, 1);
 INSERT INTO T_SMARTMOTTU_MOTO (nm_chassi, placa, unidade, fk_id_status, fk_id_tipo) VALUES ('1PSCNS391DX139403', 'LPS0292', 'Butanta', 1, 2);

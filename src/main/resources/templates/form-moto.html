@@ -58,6 +58,9 @@
             Salvar
         </button>
         <a th:href="@{/motos}" class="btn btn-cancel">Cancelar</a>
+        <form th:action="@{/logout}" method="post" style="display:inline">
+            <button type="submit" class="btn btn-cancel">Logout</button>
+        </form>
     </div>
 </form>
 

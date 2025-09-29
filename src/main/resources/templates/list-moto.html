@@ -9,9 +9,14 @@
 
 <h1>Lista de Motos</h1>
 
-<div class="container-link">
-    <a th:href="@{/motos/new}" class="btn btn-new">Cadastrar Nova Moto</a>
-</div>
+<div class="container-link" style="margin-top: 10px;">
+    <form th:action="@{/logout}" method="post" style="display:inline">
+        <button type="submit" class="btn btn-cancel">Logout</button>
+    </form>
+    <a th:href="@{/}" class="btn btn-home" style="margin-left:10px;">Home</a>
+    <a th:href="@{/motos/new}" class="btn btn-new" style="margin-left:10px;">Cadastrar Nova Moto</a>
+ </div>
+
 
 <table>
     <thead>

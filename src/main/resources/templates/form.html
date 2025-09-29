@@ -10,7 +10,7 @@
 <h1 th:text="${id != null} ? 'Editar Usuário' : 'Novo Usuário'">Usuário</h1>
 
 <form th:action="${id != null} ? @{/users/{id}(id=${id})} : @{/users}"
-      th:object="${user}"
+    th:object="${usuario}"
       method="post">
 
     <input type="hidden" th:if="${id != null}" name="_method" value="put"/>
@@ -35,6 +35,9 @@
             Salvar
         </button>
         <a th:href="@{/users}" class="btn btn-cancel">Cancelar</a>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn btn-cancel">Logout</button>
+            </form>
     </div>
 </form>
 
