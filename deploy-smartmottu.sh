@@ -58,7 +58,7 @@ echo "⚠️  Firewall 0.0.0.0/255.255.255.255 habilitado somente para desenvolv
 
 # CRIAÇÃO DE OBJETOS E DADOS INICIAIS NO BANCO
 echo "Criando tabelas, sequences, constraints e dados iniciais no banco..."
-sqlcmd -S "$SERVER_NAME.database.windows.net" -d "$DB_NAME" -U "$DB_USERNAME" -P "$DB_PASSWORD" -l 60 -N -b <<EOF
+sqlcmd -S "$SERVER_NAME.database.windows.net" -d "$DB_NAME" -U "$DB_USERNAME" -P "$DB_PASSWORD" -l 60 -N -b <<'EOF'
 CREATE SEQUENCE SQ_T_SMARTMOTTU_USUARIO START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE SQ_T_SMARTMOTTU_TIPO_MOTO START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE SQ_T_SMARTMOTTU_STATUS_MOTO START WITH 1 INCREMENT BY 1;
@@ -128,12 +128,12 @@ INSERT INTO T_SMARTMOTTU_TIPO_MOTO (nm_tipo) VALUES ('MOTTU_POP_100');
 INSERT INTO T_SMARTMOTTU_TIPO_MOTO (nm_tipo) VALUES ('MOTTU_POP_150');
 INSERT INTO T_SMARTMOTTU_TIPO_MOTO (nm_tipo) VALUES ('MOTTU_ELETRICA_X');
 
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Mauricio Silva', 'mauricio@gmail.com', 'senha123', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Rodrigo Vieira', 'rodrigo@gmail.com', 'senha456', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Renato Souza', 'renato@gmail.com', '7852578', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Maria Dantas', 'maria@gmail.com', 'abcdef', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Joao Pedro', 'joao@gmail.com', '123456', 'USER');
-INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Administrador', 'admin@email.com', '$2a$10$veKob3hpyAUsj3R7x4QFgOc8R4I6DrHU9aTmANETcCq.Xgy4NCgmW', 'ADMIN');
+INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Mauricio Silva', 'mauricio@gmail.com', '{noop}senha123', 'USER');
+INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Rodrigo Vieira', 'rodrigo@gmail.com', '{noop}senha456', 'USER');
+INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Renato Souza', 'renato@gmail.com', '{noop}7852578', 'USER');
+INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Maria Dantas', 'maria@gmail.com', '{noop}abcdef', 'USER');
+INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Joao Pedro', 'joao@gmail.com', '{noop}123456', 'USER');
+INSERT INTO T_SMARTMOTTU_USUARIO (nome, email, senha, role) VALUES ('Administrador', 'admin@email.com', '{bcrypt}$2a$10$veKob3hpyAUsj3R7x4QFgOc8R4I6DrHU9aTmANETcCq.Xgy4NCgmW', 'ADMIN');
 
 INSERT INTO T_SMARTMOTTU_MOTO (nm_chassi, placa, unidade, fk_id_status, fk_id_tipo) VALUES ('9MCNSL953VV182782', 'HMK9012', 'Bras', 1, 1);
 INSERT INTO T_SMARTMOTTU_MOTO (nm_chassi, placa, unidade, fk_id_status, fk_id_tipo) VALUES ('1PSCNS391DX139403', 'LPS0292', 'Butanta', 1, 2);
