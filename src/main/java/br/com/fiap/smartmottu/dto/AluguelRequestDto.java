@@ -7,9 +7,10 @@ import lombok.*;
 @Setter
 @Getter
 @Builder
-public class LoginResponse {
+public class AluguelRequestDto {
 
-    private String token;
-    private LoginUsuarioResponseDto usuario;
+    private String email;
+    private Long motoId;
+    private int dias;
 
 }

@@ -1,3 +1,4 @@
+
 package br.com.fiap.smartmottu.dto;
 
 import lombok.*;

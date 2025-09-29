@@ -6,7 +6,8 @@ public enum StatusEnum {
     INATIVO("Inativo", 2L),
     BLOQUEADO("Bloqueado", 3L),
     CANCELADO("Cancelado", 4L),
-    MANUTENCAO("Manutenção", 5L);
+    MANUTENCAO("Manutenção", 5L),
+    ALUGADA("Alugada", 6L);
 
     private final String descricao;
     private final Long id;

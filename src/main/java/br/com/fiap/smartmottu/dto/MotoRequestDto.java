@@ -1,5 +1,7 @@
 package br.com.fiap.smartmottu.dto;
 
+import br.com.fiap.smartmottu.entity.enuns.StatusEnum;
+import br.com.fiap.smartmottu.entity.enuns.TipoMotoEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -18,9 +20,9 @@ public class MotoRequestDto {
     @NotBlank @Size(min = 7, max = 7)
     private String placa;
 
-    private Long statusId;
+    private StatusEnum statusId;
+    private TipoMotoEnum modeloId;
 
-    private Long modeloId;
 
     @NotBlank
     private String unidade;

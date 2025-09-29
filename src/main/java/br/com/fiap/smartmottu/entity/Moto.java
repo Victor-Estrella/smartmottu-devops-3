@@ -36,5 +36,10 @@ public class Moto {
     @JoinColumn(name = "fk_id_tipo")
     private TipoMoto modelo;
 
+    @ManyToOne
+    @JoinColumn(name = "fk_id_usuario")
+    private Usuario usuario;
+
+
 
 }

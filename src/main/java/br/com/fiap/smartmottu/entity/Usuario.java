@@ -1,5 +1,6 @@
 package br.com.fiap.smartmottu.entity;
 
+import br.com.fiap.smartmottu.entity.enuns.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +28,8 @@ public class Usuario {
 
     @Column(name = "senha")
     private String senha;
+
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
 }

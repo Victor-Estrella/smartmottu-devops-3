@@ -34,8 +34,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(
                         authorizeConfig -> {
-                            authorizeConfig.requestMatchers("/users/new", "/users", "/css/**").permitAll();
-                            authorizeConfig.requestMatchers("/").permitAll();
+                            authorizeConfig.requestMatchers("/css/**").permitAll();
+                            authorizeConfig.requestMatchers("/login", "/users/new").permitAll();
+
+                            authorizeConfig.requestMatchers( "/motos/new").hasRole("ADMIN");
+                            authorizeConfig.requestMatchers("/motos/**", "/aluguel/**").hasAnyRole("USER", "ADMIN");
+
                             authorizeConfig.anyRequest().authenticated();
                         }
                 )
@@ -48,7 +52,11 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-                .logout(logout -> logout.permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
                 .build();
     }
 

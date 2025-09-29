@@ -12,6 +12,10 @@ public class NotFoundException extends RuntimeException{
         return () -> new NotFoundException("Usuario não achado para id" + id);
     }
 
+    public static Supplier<NotFoundException> forEmail(String email) {
+        return () -> new NotFoundException("Usuário não encontrado com e-mail" + email);
+    }
+
     public static Supplier<NotFoundException> forMoto(Long id) {
         return () -> new NotFoundException("Moto não achado para id" + id);
     }
@@ -25,6 +29,15 @@ public class NotFoundException extends RuntimeException{
     public static Supplier<NotFoundException> forLogin() {
         return () -> new NotFoundException("Usuário não encontrado na base dados");
     }
+
+    public static Supplier<NotFoundException> forUsuarioAluguel() {
+        return () -> new NotFoundException("Usuário já possui uma moto alugada");
+    }
+
+    public static Supplier<NotFoundException> forAluguel() {
+        return () -> new NotFoundException("Status ALUGADA não encontrado");
+    }
+
 
 
 }

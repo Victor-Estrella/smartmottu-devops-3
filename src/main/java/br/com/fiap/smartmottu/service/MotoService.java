@@ -9,8 +9,10 @@ import br.com.fiap.smartmottu.exception.NotFoundException;
 import br.com.fiap.smartmottu.repository.MotoRepository;
 import br.com.fiap.smartmottu.repository.StatusMotoRepository;
 import br.com.fiap.smartmottu.repository.TipoMotoRepository;
+import br.com.fiap.smartmottu.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,10 @@ import java.util.List;
 public class MotoService {
 
     @Autowired private MotoRepository motoRepository;
-    @Autowired private StatusMotoRepository statusMotoRepository;
     @Autowired private TipoMotoRepository tipoMotoRepository;
+    @Autowired private StatusMotoRepository statusMotoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public List<MotoResponseDto> getAll() {
         return motoRepository.findAll()
@@ -41,19 +45,36 @@ public class MotoService {
         motoRepository.delete(moto);
     }
 
+    public List<MotoResponseDto> getByUsuarioId(Long usuarioId) {
+        return motoRepository.findByUsuario_IdUsuario(usuarioId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     public MotoResponseDto save(@Valid MotoRequestDto dto) {
         Moto moto = new Moto();
         moto.setNmChassi(dto.getNmChassi());
         moto.setPlaca(dto.getPlaca());
         moto.setUnidade(dto.getUnidade());
 
-        StatusMoto status = statusMotoRepository.findById(dto.getStatusId())
-                .orElseThrow(NotFoundException.forStatusMoto(dto.getStatusId()));
-        moto.setStatus(status);
+        if (dto.getStatusId() != null) {
+            StatusMoto status = statusMotoRepository.findByStatus(dto.getStatusId())
+                    .orElseThrow(() -> new RuntimeException("Status não encontrado: " + dto.getStatusId()));
+            moto.setStatus(status);
+        }
 
-        TipoMoto tipo = tipoMotoRepository.findById(dto.getModeloId())
-                .orElseThrow(NotFoundException.forTipoMoto(dto.getModeloId()));
-        moto.setModelo(tipo);
+        if (dto.getModeloId() != null) {
+            TipoMoto tipo = tipoMotoRepository.findByNmTipo(dto.getModeloId())
+                    .orElseThrow(() -> new RuntimeException("Tipo não encontrado: " + dto.getModeloId()));
+            moto.setModelo(tipo);
+        }
+
+        String emailLogado = SecurityContextHolder.getContext().getAuthentication().getName();
+        var usuario = usuarioRepository.findByEmail(emailLogado)
+                .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado: " + emailLogado));
+
+        moto.setUsuario(usuario);
 
         Moto saved = motoRepository.save(moto);
         return toResponse(saved);
@@ -68,20 +89,27 @@ public class MotoService {
         existing.setUnidade(dto.getUnidade());
 
         if (dto.getStatusId() != null) {
-            StatusMoto status = statusMotoRepository.findById(dto.getStatusId())
-                    .orElseThrow(NotFoundException.forStatusMoto(dto.getStatusId()));
+            StatusMoto status = statusMotoRepository.findByStatus(dto.getStatusId())
+                    .orElseThrow(() -> new RuntimeException("Status não encontrado: " + dto.getStatusId()));
             existing.setStatus(status);
         }
 
         if (dto.getModeloId() != null) {
-            TipoMoto tipo = tipoMotoRepository.findById(dto.getModeloId())
-                    .orElseThrow(NotFoundException.forTipoMoto(dto.getModeloId()));
+            TipoMoto tipo = tipoMotoRepository.findByNmTipo(dto.getModeloId())
+                    .orElseThrow(() -> new RuntimeException("Tipo não encontrado: " + dto.getModeloId()));
             existing.setModelo(tipo);
         }
+
+        String emailLogado = SecurityContextHolder.getContext().getAuthentication().getName();
+        var usuario = usuarioRepository.findByEmail(emailLogado)
+                .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado: " + emailLogado));
+
+        existing.setUsuario(usuario);
 
         Moto saved = motoRepository.save(existing);
         return toResponse(saved);
     }
+
 
     private MotoResponseDto toResponse(Moto moto) {
         MotoResponseDto dto = new MotoResponseDto();
@@ -89,13 +117,10 @@ public class MotoService {
         dto.setNmChassi(moto.getNmChassi());
         dto.setPlaca(moto.getPlaca());
         dto.setUnidade(moto.getUnidade());
-        dto.setStatusId(moto.getStatus() != null ? moto.getStatus().getIdStatus() : null);
-        dto.setModeloId(moto.getModelo() != null ? moto.getModelo().getIdTipo() : null);
-    // Nomes legíveis
-    dto.setStatusName(moto.getStatus() != null && moto.getStatus().getStatus() != null
-        ? moto.getStatus().getStatus().getDescricao() : null);
-    dto.setModeloName(moto.getModelo() != null && moto.getModelo().getNmTipo() != null
-        ? moto.getModelo().getNmTipo().getDescricao() : null);
+        dto.setEmail(moto.getUsuario() != null ? moto.getUsuario().getEmail() : null);
+        dto.setStatusId(moto.getStatus() != null ? moto.getStatus().getStatus() : null);
+        dto.setModeloId(moto.getModelo() != null ? moto.getModelo().getNmTipo() : null);
+
         return dto;
     }
 }
