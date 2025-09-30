@@ -9,10 +9,8 @@ import br.com.fiap.smartmottu.exception.NotFoundException;
 import br.com.fiap.smartmottu.repository.MotoRepository;
 import br.com.fiap.smartmottu.repository.StatusMotoRepository;
 import br.com.fiap.smartmottu.repository.TipoMotoRepository;
-import br.com.fiap.smartmottu.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +21,6 @@ public class MotoService {
     @Autowired private MotoRepository motoRepository;
     @Autowired private TipoMotoRepository tipoMotoRepository;
     @Autowired private StatusMotoRepository statusMotoRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
     public List<MotoResponseDto> getAll() {
         return motoRepository.findAll()
@@ -70,11 +66,7 @@ public class MotoService {
             moto.setModelo(tipo);
         }
 
-        String emailLogado = SecurityContextHolder.getContext().getAuthentication().getName();
-        var usuario = usuarioRepository.findByEmail(emailLogado)
-                .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado: " + emailLogado));
-
-        moto.setUsuario(usuario);
+    // Não associar usuário automaticamente; permitir null
 
         Moto saved = motoRepository.save(moto);
         return toResponse(saved);
@@ -100,11 +92,7 @@ public class MotoService {
             existing.setModelo(tipo);
         }
 
-        String emailLogado = SecurityContextHolder.getContext().getAuthentication().getName();
-        var usuario = usuarioRepository.findByEmail(emailLogado)
-                .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado: " + emailLogado));
-
-        existing.setUsuario(usuario);
+    // Não associar usuário automaticamente; manter como está (pode ser null)
 
         Moto saved = motoRepository.save(existing);
         return toResponse(saved);
