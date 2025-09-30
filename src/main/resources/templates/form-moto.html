@@ -31,7 +31,7 @@
             <label for="statusId">Status:</label>
             <select id="statusId" th:field="*{statusId}" required>
                 <option value="" disabled th:selected="*{statusId} == null">Selecione</option>
-                <option th:each="s : ${statusList}" th:value="${s.idStatus}" th:text="${s.status.descricao}"></option>
+                <option th:each="s : ${statusList}" th:value="${s}" th:text="${s.descricao}"></option>
             </select>
             </div>
             
@@ -39,7 +39,7 @@
                 <label for="modeloId">Modelo:</label>
                 <select id="modeloId" th:field="*{modeloId}" required>
                     <option value="" disabled th:selected="*{modeloId} == null">Selecione</option>
-                    <option th:each="m : ${modeloList}" th:value="${m.idTipo}" th:text="${m.nmTipo.descricao}"></option>
+                    <option th:each="opt : ${modeloList}" th:value="${opt}" th:text="${opt.descricao}"></option>
                 </select>
             </div>
             

@@ -34,8 +34,8 @@
                     <td th:text="${m.nmChassi}"></td>
                     <td th:text="${m.placa}"></td>
                     <td th:text="${m.unidade}"></td>
-                <td th:text="${m.statusName}"></td>
-                <td th:text="${m.modeloName}"></td>
+                <td th:text="${m.statusId != null ? m.statusId.descricao : '—'}"></td>
+                <td th:text="${m.modeloId != null ? m.modeloId.descricao : '—'}"></td>
                     <td>
                         <a th:href="@{/}" class="btn btn-home">Home</a>
                         <a class="btn btn-edit" th:href="@{/motos/{id}/edit(id=${m.idMoto})}">Editar</a>
