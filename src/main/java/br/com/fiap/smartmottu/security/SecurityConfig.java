@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @AllArgsConstructor
@@ -56,7 +57,7 @@ public class SecurityConfig {
                 )
 
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)

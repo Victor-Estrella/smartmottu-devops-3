@@ -1,68 +1,52 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${id != null} ? 'Editar Moto' : 'Nova Moto'">Moto</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title th:text="${id != null} ? 'Editar Moto' : 'Nova Moto'">Moto</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
 
-<h1 th:text="${id != null} ? 'Editar Moto' : 'Nova Moto'">Moto</h1>
+        <h1 th:text="${id != null} ? 'Editar Moto' : 'Nova Moto'">Moto</h1>
 
-<form th:action="${id != null} ? @{/motos/{id}(id=${id})} : @{/motos}"
-      th:object="${moto}"
-      method="post">
-
-    <input type="hidden" th:if="${id != null}" name="_method" value="put"/>
-
-    <div>
-        <label for="nmChassi">Chassi:</label>
-        <input type="text" id="nmChassi" th:field="*{nmChassi}" required/>
-    </div>
-
-    <div>
-        <label for="placa">Placa:</label>
-        <input type="text" id="placa" th:field="*{placa}" required/>
-    </div>
-
-    <div>
-        <label for="unidade">Unidade:</label>
-        <input type="text" id="unidade" th:field="*{unidade}" required/>
-    </div>
-
-    <div>
-    <label for="statusId">Status:</label>
-    <select id="statusId" th:field="*{statusId}" required>
-        <option value="" disabled th:selected="*{statusId} == null">Selecione</option>
-        <option th:each="s : ${statusList}"
-            th:value="${s.idStatus}"
-            th:text="${s.status.descricao}">
-        </option>
-    </select>
-    </div>
-
-    <div>
-    <label for="modeloId">Modelo:</label>
-    <select id="modeloId" th:field="*{modeloId}" required>
-        <option value="" disabled th:selected="*{modeloId} == null">Selecione</option>
-        <option th:each="m : ${modeloList}"
-            th:value="${m.idTipo}"
-            th:text="${m.nmTipo.descricao}">
-        </option>
-    </select>
-    </div>
-
-    <div>
-        <button class="btn btn-save" type="submit"
-                th:text="${id != null} ? 'Atualizar' : 'Salvar'">
-            Salvar
-        </button>
-        <a th:href="@{/motos}" class="btn btn-cancel">Cancelar</a>
-        <form th:action="@{/logout}" method="post" style="display:inline">
-            <button type="submit" class="btn btn-cancel">Logout</button>
+        <form th:action="${id != null} ? @{/motos/{id}(id=${id})} : @{/motos}" th:object="${moto}" method="post">
+            <input type="hidden" th:if="${id != null}" name="_method" value="put"/>
+            
+            <div>
+                <label for="nmChassi">Chassi:</label>
+                <input type="text" id="nmChassi" th:field="*{nmChassi}" required/>
+            </div>
+            
+            <div>
+                <label for="placa">Placa:</label>
+                <input type="text" id="placa" th:field="*{placa}" required/>
+            </div>
+            
+            <div>
+                <label for="unidade">Unidade:</label>
+                <input type="text" id="unidade" th:field="*{unidade}" required/>
+            </div>
+            
+            <div>
+            <label for="statusId">Status:</label>
+            <select id="statusId" th:field="*{statusId}" required>
+                <option value="" disabled th:selected="*{statusId} == null">Selecione</option>
+                <option th:each="s : ${statusList}" th:value="${s.idStatus}" th:text="${s.status.descricao}"></option>
+            </select>
+            </div>
+            
+            <div>
+                <label for="modeloId">Modelo:</label>
+                <select id="modeloId" th:field="*{modeloId}" required>
+                    <option value="" disabled th:selected="*{modeloId} == null">Selecione</option>
+                    <option th:each="m : ${modeloList}" th:value="${m.idTipo}" th:text="${m.nmTipo.descricao}"></option>
+                </select>
+            </div>
+            
+            <div>
+                <button class="btn btn-save" type="submit" th:text="${id != null} ? 'Atualizar' : 'Salvar'">Salvar</button>
+                <a th:href="@{/motos}" class="btn btn-cancel">Cancelar</a>
+            </div>
         </form>
-    </div>
-</form>
-
-</body>
+    </body>
 </html>

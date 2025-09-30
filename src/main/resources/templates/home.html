@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Página Inicial</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-<body>
-    <div>
-        <div>
-            <h1>SmartMottu</h1>
+    <head>
+        <meta charset="UTF-8">
+        <title>Página Inicial</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <h1>SmartMottu</h1>
+        <div class="container-link" style="margin-top: 20px;">
+            <a th:href="@{/users}" class="btn btn-new" style="margin-right: 10px;">Usuários</a>
+            <a th:href="@{/motos}" class="btn btn-new">Motos</a>
         </div>
-        <div class="navbar">
-            <nav class="tabs">
-                <a class="tab" th:href="@{/users}">Usuários</a>
-                <a class="tab" th:href="@{/motos}">Motos</a>
-            </nav>
+        <div class="container-link" style="margin-top: 10px;">
+            <a th:href="@{/logout}" class="btn btn-cancel">Logout</a>
         </div>
-    </div>
-
-</body>
+    </body>
 </html>

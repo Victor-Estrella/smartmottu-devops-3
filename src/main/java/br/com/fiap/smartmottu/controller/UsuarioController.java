@@ -45,7 +45,7 @@ public class UsuarioController {
     @PostMapping
     public String saveUser(@ModelAttribute("usuario") UsuarioRequestDto dto) {
         service.save(dto);
-        return "redirect:/";
+        return "redirect:/login";
     }
 
     @GetMapping("/{id}/edit")

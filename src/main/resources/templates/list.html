@@ -10,12 +10,7 @@
         <h1>Lista de Usuários</h1>
 
         <div class="container-link" style="margin-top: 10px;">
-            <form th:action="@{/logout}" method="post" style="display:inline">
-                <button type="submit" class="btn btn-cancel">Logout</button>
-            </form>
-        </div>
-
-        <div class="container-link">
+            <a th:href="@{/logout}" class="btn btn-cancel" style="margin-right:10px;">Logout</a>
             <a th:href="@{/users/new}" class="btn btn-new">Cadastrar Novo Usuário</a>
         </div>
 
@@ -35,7 +30,6 @@
                     <td th:text="${u.nome}"></td>
                     <td th:text="${u.email}"></td>
                     <td th:text="${u.senha}"></td>
-
                     <td>
                         <a th:href="@{/}" class="btn btn-home">Home</a>
 
