@@ -31,11 +31,7 @@
                     <td th:text="${u.email}"></td>
                     <td th:text="${u.senha}"></td>
                     <td>
-                        <a th:href="@{/}" class="btn btn-home">Home</a>
-
-                        <a class="btn btn-edit" th:href="@{/users/{id}/edit(id=${u.idUsuario})}">
-                            Editar
-                        </a>
+                        <a class="btn btn-edit" th:href="@{/users/{id}/edit(id=${u.idUsuario})}">Editar</a>
 
                         <form th:action="@{/users/{id}(id=${u.idUsuario})}" method="post" style="display:inline">
                             <input type="hidden" name="_method" value="delete"/>
