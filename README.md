@@ -2,6 +2,34 @@
 
 Aplicação web Java (Spring Boot 3, Java 17) com front Thymeleaf, hospedada no Azure App Service (Linux) e banco de dados no Azure SQL Database.
 
+## Introdução
+A Mottu é uma empresa de aluguel de motos a baixo custo (R$26,40/dia),
+oferecendo não só o veículo, mas também crédito, manutenção, assistência,
+oportunidades de trabalho (Delivery e iFood) e três modelos principais: Pop, Sport (a
+mais econômica do Brasil) e Mottu-E (elétrica). Produz motos em Manaus em
+parceria com a Índia e utiliza IoT e GPS para rastreamento.
+O problema identificado é a desorganização dos pátios: dificuldade em
+localizar motos paradas sem placa, com chassi encoberto ou quando o GPS entra
+em “sleeping”. Isso causa retrabalho, atrasos e queda de produtividade,
+prejudicando a experiência do cliente.
+
+## Solução Proposta
+A proposta consiste em desenvolver uma plataforma inteligente de gestão de
+pátios para a Mottu, integrando visão computacional, IoT e QR Code. O sistema
+contará com câmeras 360° que captam o ambiente em tempo real, permitindo que a
+visão computacional identifique motos mesmo sem placa ou chassi visível. Cada
+moto terá um cadastro completo (tipo, modelo, placa, chassi e foto) armazenado em
+banco de dados e vinculado a um QR Code exclusivo, que funciona como
+identificador digital para acesso rápido a informações e histórico. A plataforma
+possibilitará que o operador selecione a moto desejada e, por meio das câmeras, o
+sistema a localize visualmente em tempo real. Além disso, será gerado um histórico
+individual de movimentações, manutenções e alterações de status.
+Com isso, o problema da perda de motos no pátio é solucionado de forma
+prática e escalável, garantindo rastreabilidade, eficiência operacional e otimização
+do trabalho dos operadores.
+
+
+
 ## Arquitetura da solução
 
 ![Arquitetura](docs/arquitetura.jpg)
