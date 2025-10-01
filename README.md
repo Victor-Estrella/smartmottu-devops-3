@@ -1,14 +1,17 @@
-# SmartMottu – Azure (visão e deploy)
+# SmartMottu – DevOps Tools & Cloud Computing
 
-Aplicação web Java (Spring Boot) hospedada no Azure App Service (Linux) com banco de dados no Azure SQL Database. Este README foca apenas na Azure: arquitetura, provisionamento, configuração, segurança, operação e passo a passo de deploy.
+Aplicação web Java (Spring Boot 3, Java 17) com front Thymeleaf, hospedada no Azure App Service (Linux) e banco de dados no Azure SQL Database.
 
-## Arquitetura na Azure
-- Compute: Azure App Service (Linux) executando Java 17 (Spring Boot)
-- Plano: App Service Plan (SKU ajustável conforme custo/performance)
-- Banco de dados: Azure SQL Database (single database) em um Azure SQL Server lógico
-- Configuração: App Settings do Web App para variáveis de ambiente (datasource, porta, etc.)
-- Conexão: JDBC com TLS (encrypt=true) para Azure SQL
-- Opcional: Application Insights, Azure Key Vault, Managed Identity, Private Endpoint
+## Arquitetura da solução
+
+![Arquitetura](docs/arquitetura.jpg)
+
+Fluxos principais:
+- GitHub Actions → Web App: Deploy (CI/CD)
+- Browser → Web App: HTTP/HTTPS
+- Web App → Azure SQL Database: JDBC (TLS)
+- Web App → Application Insights: Telemetria (agent codeless)
+
 
 ## Provisionamento e Deploy (script)
 O script `deploy-smartmottu.sh` automatiza:
@@ -18,38 +21,10 @@ O script `deploy-smartmottu.sh` automatiza:
 4) Aplicação de DDL/DML no Azure SQL via `sqlcmd` (criação de tabelas/constraints e seed inicial)
 
 Notas:
-- O seed cria apenas o usuário ADMIN com senha `admin123` (para DEV/demo). Para produção, troque para BCrypt e segredos protegidos.
+- O seed cria apenas o usuário ADMIN com senha `admin123`.
 - O script requer Azure CLI autenticada (`az login`) e `bash`. Para executar DDL/DML, requer `sqlcmd` (ou use Azure Cloud Shell Bash).
 
-## Configuração do App Service (Linux)
-- Runtime: Java 17
-- App Settings relevantes:
-	- `SPRING_DATASOURCE_URL` (ex: `jdbc:sqlserver://<servidor>.database.windows.net:1433;database=<db>;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;`)
-	- `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
-	- `PORT` (o App Service injeta; a aplicação já lê essa variável)
-- Logging/Diagnóstico: habilitar Log Stream; considerar Application Insights
-- Always On: recomendado para evitar cold starts
-
-## Azure SQL Database
-- Firewall: habilitar "Allow Azure services" e/ou IPs necessários
-- Conexão segura: TLS por padrão (encrypt=true). Evite `trustServerCertificate=true` em produção
-- Esquema/Seed: aplicados pelo `deploy-smartmottu.sh` via `sqlcmd`
-- Tamanho/performance: escolher tier (DTU/vCore) conforme custo/uso
-
-## Rede e Segurança
-- HTTPS obrigatório (redirect no App Service)
-- Segredos: preferir Key Vault + Managed Identity; evitar segredos em texto plano
-- Access Restrictions: limitar origem de tráfego quando apropriado
-- Banco: considerar Private Endpoint para tráfego privado
-
-## Observabilidade
-- Application Insights (opcional): métricas, traces e live metrics
-- App Service Diagnostics e Log Stream para troubleshooting
-
-## Escalabilidade e custos
-- Scale up: alterar SKU do App Service Plan
-- Scale out: aumentar instâncias (manual ou autoscale por métricas)
-- Banco: ajustar tier/DTU/vCore no Azure SQL
+DDL completo e comentado: consulte `script_bd.sql` na raiz do projeto.
 
 ## Passo a passo (Azure)
 1) Pré-requisitos
@@ -62,9 +37,15 @@ Notas:
 ```
 
 3) Após o deploy
-- Acessar: `https://SEU-APP.azurewebsites.net`
-- Login DEV: email semeado no script e senha `admin123`
+- Acessar: `https://SEU-APP.azurewebsites.net` (nesse caso é `https://smartmottu-api.azurewebsites.net`)
+
+- Login DEV: `admin@email.com` / `admin123`
 - Logout: GET `/logout`
+
+4) Teste rápido de funcionalidade
+- Acesse `/login` e autentique (Criando a conta ou logando com o admin).
+- Vá para `/motos/new` e cadastre uma moto (chassi: exatamente 17 caracteres; placa: 7 caracteres). Se estiver inválido, o formulário mostrará mensagens de erro.
+- Liste em `/motos` e verifique a nova moto.
 
 ## Troubleshooting (Azure)
 - `sqlcmd` falhou (DDL/DML): verifique firewall do Azure SQL e credenciais
@@ -72,8 +53,30 @@ Notas:
 - Erro 500 em `/motos`: redeploy para garantir templates atualizados; dados de status/modelo precisam existir (template é null-safe)
 - Falha de start no Web App: conferir App Settings e ver Log Stream
 
-## Segurança (produção)
-- Trocar NoOp por BCrypt no PasswordEncoder
-- Semear ADMIN com senha já criptografada
-- Mover segredos para Azure Key Vault e usar Managed Identity
-- Considerar Private Endpoint no Azure SQL e Access Restrictions no Web App
+## Acesso ao Banco de Dados (Azure SQL)
+Você pode visualizar e consultar o banco provisionado no Azure SQL de duas formas:
+
+- Azure Portal (Query editor)
+	 - Abra o recurso do SQL Database no Portal Azure
+	 - Clique em "Query editor (preview) ou Editor de consultas"
+	 - Autenticação: SQL Login
+		 - Usuário: valor da variável `DB_USERNAME` definida no `deploy-smartmottu.sh`
+		 - Senha: valor da variável `DB_PASSWORD` ("db-password" do script)
+	 - Exemplos de consulta:
+		 - `SELECT TOP 10 * FROM T_SMARTMOTTU_USUARIO;`
+		 - `SELECT TOP 10 * FROM T_SMARTMOTTU_MOTO;`
+
+Variáveis úteis no `deploy-smartmottu.sh`:
+- `SERVER_NAME`: nome do servidor lógico do Azure SQL (ex.: `sql-server-smartmottu`)
+- `DB_NAME`: nome do banco (ex.: `db-smartmottu`)
+- `DB_USERNAME`: usuário admin SQL (ex.: `user-smartmottu`)
+- `DB_PASSWORD`: senha do admin SQL ("db-password" do script)
+
+## Testes via HTTP (opcional)
+Como a aplicação usa login por formulário, recomenda-se testar via navegador. Ainda assim, segue um roteiro opcional:
+- Obter sessão autenticada via formulário em `/login`
+- Enviar POST de criação de moto para `/motos` com os campos `nmChassi`, `placa`, `unidade`, `statusId`, `modeloId` usando cookies de sessão (complexo com curl; para demonstração use o navegador)
+
+## Vídeo & Repositório
+- Vídeo demonstrativo (passo a passo): https://youtu.be/7t5AVv5gmB4
+- Repositório: https://github.com/Victor-Estrella/smartmottu-devops-3
