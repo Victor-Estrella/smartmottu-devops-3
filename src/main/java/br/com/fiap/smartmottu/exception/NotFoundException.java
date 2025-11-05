@@ -13,7 +13,7 @@ public class NotFoundException extends RuntimeException{
     }
 
     public static Supplier<NotFoundException> forEmail(String email) {
-        return () -> new NotFoundException("Usuário não encontrado com e-mail" + email);
+        return () -> new NotFoundException("Usuário não encontrado com e-mail: " + email);
     }
 
     public static Supplier<NotFoundException> forMoto(Long id) {

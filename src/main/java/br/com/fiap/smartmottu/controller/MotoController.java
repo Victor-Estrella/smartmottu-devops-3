@@ -2,8 +2,6 @@ package br.com.fiap.smartmottu.controller;
 
 import br.com.fiap.smartmottu.dto.MotoRequestDto;
 import br.com.fiap.smartmottu.dto.MotoResponseDto;
-import br.com.fiap.smartmottu.dto.UsuarioResponseDto;
-import br.com.fiap.smartmottu.entity.enuns.RoleEnum;
 import br.com.fiap.smartmottu.entity.enuns.StatusEnum;
 import br.com.fiap.smartmottu.entity.enuns.TipoMotoEnum;
 import br.com.fiap.smartmottu.service.MotoService;
@@ -15,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 @RequestMapping("/motos")
@@ -28,18 +25,7 @@ public class MotoController {
 
     @GetMapping
     public String listMotos(Model model, Principal principal) {
-        String email = principal.getName();
-
-        UsuarioResponseDto usuarioLogado = usuarioService.findByEmail(email);
-
-        List<MotoResponseDto> motos;
-
-        if (usuarioLogado.getRole().equals(RoleEnum.ADMIN)) {
-            motos = service.getAll();
-        } else {
-            motos = service.getByUsuarioId(usuarioLogado.getIdUsuario());
-        }
-
+        var motos = service.getAll();
         model.addAttribute("motos", motos);
         return "list-moto";
     }
@@ -88,9 +74,19 @@ public class MotoController {
         return "redirect:/";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        service.delete(id);
-        return "redirect:/motos";
-    }
+//    @DeleteMapping("/{id}")
+//    public String deleteMoto(@PathVariable Long id) {
+//        try {
+//            service.delete(id);
+//            return "redirect:/motos";
+//
+//        } catch (RuntimeException e) {
+//
+//            // Opção 1: Redirecionar para a lista com uma mensagem de erro
+//            return "redirect:/motos?error=" + e.getMessage();
+//
+//            // Opção 2: Redirecionar para uma página de erro dedicada
+//            // return "erro-exclusao";
+//        }
+//    }
 }

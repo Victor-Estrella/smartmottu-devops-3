@@ -1,50 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <title>Lista de Motos</title>
-        <link rel="stylesheet" th:href="@{/css/style.css}">
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Motos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
 
-        <h1>Lista de Motos</h1>
+<h1>Lista de Motos</h1>
 
-        <div class="container-link" style="margin-top: 10px;">
-            <a th:href="@{/}" class="btn btn-home" style="margin-left:0; margin-right:10px;">Home</a>
-            <a th:href="@{/motos/new}" class="btn btn-new" style="margin-left:0;">Cadastrar Nova Moto</a>
-            <a th:href="@{/logout}" class="btn btn-cancel" style="margin-right:10px;">Logout</a>
-        </div>
+<div class="container-link">
+    <a th:href="@{/motos/new}" class="btn btn-new">Cadastrar Nova Moto</a>
+</div>
 
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Chassi</th>
+        <th>Placa</th>
+        <th>Unidade</th>
+        <th>Status</th>
+        <th>Modelo</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${motos}">
+        <td th:text="${m.idMoto}"></td>
+        <td th:text="${m.nmChassi}"></td>
+        <td th:text="${m.placa}"></td>
+        <td th:text="${m.unidade}"></td>
+        <td th:text="${m.statusId}"></td>
+        <td th:text="${m.modeloId}"></td>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Chassi</th>
-                    <th>Placa</th>
-                    <th>Unidade</th>
-                    <th>Status</th>
-                    <th>Modelo</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="m : ${motos}">
-                    <td th:text="${m.idMoto}"></td>
-                    <td th:text="${m.nmChassi}"></td>
-                    <td th:text="${m.placa}"></td>
-                    <td th:text="${m.unidade}"></td>
-                <td th:text="${m.statusId != null ? m.statusId.descricao : '—'}"></td>
-                <td th:text="${m.modeloId != null ? m.modeloId.descricao : '—'}"></td>
-                    <td>
-                        <a class="btn btn-edit" th:href="@{/motos/{id}/edit(id=${m.idMoto})}">Editar</a>
-                        <form th:action="@{/motos/{id}(id=${m.idMoto})}" method="post" style="display:inline">
-                            <input type="hidden" name="_method" value="delete"/>
-                            <button class="btn btn-delete" type="submit">Excluir</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </body>
+        <td>
+
+            <a th:href="@{/home}" class="btn btn-home">Home</a>
+
+            <a class="btn btn-edit"
+               th:href="@{/motos/{id}/edit(id=${m.idMoto})}">
+                Editar
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
 </html>

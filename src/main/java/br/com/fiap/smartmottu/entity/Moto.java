@@ -3,6 +3,7 @@ package br.com.fiap.smartmottu.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 @Entity
 @Table(name = "T_SMARTMOTTU_MOTO")
 @SequenceGenerator(name = "moto", sequenceName = "SQ_T_SMARTMOTTU_MOTO", allocationSize = 1)
@@ -39,7 +40,5 @@ public class Moto {
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
     private Usuario usuario;
-
-
 
 }

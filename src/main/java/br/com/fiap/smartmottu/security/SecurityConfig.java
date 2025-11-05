@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @AllArgsConstructor
@@ -34,14 +32,12 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
 
-                                .authorizeHttpRequests(
+                .authorizeHttpRequests(
                         authorizeConfig -> {
-                                                        authorizeConfig.requestMatchers("/css/**").permitAll();
-                                                        // Páginas públicas
-                                                        authorizeConfig.requestMatchers("/", "/login", "/users/new").permitAll();
-                                                        authorizeConfig.requestMatchers(HttpMethod.POST, "/users").permitAll();
+                            authorizeConfig.requestMatchers("/css/**").permitAll();
+                            authorizeConfig.requestMatchers("/login", "/users/new", "/users").permitAll();
 
-                            authorizeConfig.requestMatchers( "/motos/new").hasRole("ADMIN");
+                            authorizeConfig.requestMatchers( "/motos/new", "/motos").hasRole("ADMIN");
                             authorizeConfig.requestMatchers("/motos/**", "/aluguel/**").hasAnyRole("USER", "ADMIN");
 
                             authorizeConfig.anyRequest().authenticated();
@@ -57,12 +53,12 @@ public class SecurityConfig {
                 )
 
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID")
                         .permitAll()
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/access-denied")
                 )
                 .build();
     }

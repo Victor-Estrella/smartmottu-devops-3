@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Alugueis</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Lista de Alugueis</h1>
+
+<div class="container-link">
+  <a th:href="@{/aluguel/new}" class="btn btn-new">Cadastrar Novo Aluguel</a>
+</div>
+
+<table>
+  <thead>
+  <tr>
+    <th>ID Aluguel</th>
+    <th>Usuario</th>
+    <th>Moto</th>
+    <th>Data inicial do Aluguel</th>
+    <th>Data final do Aluguel</th>
+    <th>Valor total</th>
+    <th>Status do Dias Alugados</th>
+    <th>Ação</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="a : ${alugueis}">
+    <td th:text="${a.aluguelId}"></td>
+    <td th:text="${a.usuario}"></td>
+    <td th:text="${a.moto}"></td>
+    <td th:text="${#temporals.format(a.dataInicio, 'dd/MM/yyyy')}"></td>
+    <td th:text="${#temporals.format(a.dataFim, 'dd/MM/yyyy')}"></td>
+    <td th:text="${a.valorTotal}"></td>
+    <td th:text="${a.statusAluguel}"></td>
+
+    <td>
+      <a th:href="@{/home}" class="btn btn-home">Home</a>
+
+      <th:block th:with="StatusAluguel=${T(br.com.fiap.smartmottu.entity.enuns.StatusAluguel)}">
+
+        <form th:if="${a.statusAluguel == StatusAluguel.INATIVO}"
+              th:action="@{/aluguel/{id}(id=${a.aluguelId})}"
+              method="post" style="display:inline">
+
+          <input type="hidden" name="_method" value="delete"/>
+
+          <button class="btn btn-delete" type="submit"
+                  onclick="return confirm('Deseja realmente excluir?')">Excluir
+          </button>
+        </form>
+
+        <span class="btn btn-delete"
+              th:if="${a.statusAluguel == StatusAluguel.ATIVO}">
+          Não pode excluir
+    </span>
+      </th:block>
+
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

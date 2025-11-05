@@ -13,10 +13,15 @@ import br.com.fiap.smartmottu.repository.AluguelRepository;
 import br.com.fiap.smartmottu.repository.MotoRepository;
 import br.com.fiap.smartmottu.repository.StatusMotoRepository;
 import br.com.fiap.smartmottu.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AluguelService {
@@ -37,13 +42,22 @@ public class AluguelService {
     public AluguelResponseDto alugarMoto(AluguelRequestDto filter) {
 
         Usuario usuario = validarUsuario(filter.getEmail());
+
+        boolean jaTemMoto = aluguelRepository.existsByUsuario(usuario);
+        if (jaTemMoto) {
+            throw new IllegalArgumentException("O usuário já possui uma moto cadastrada.");
+        }
+
         Moto moto = validarMoto(filter.getMotoId(), usuario.getIdUsuario());
 
-        LocalDate dataInicio = LocalDate.now();
-        LocalDate dataFim = dataInicio.plusDays(filter.getDias());
-        Double valorTotal = calcularValorTotal(filter.getDias());
+        LocalDate dataInicio = filter.getDataInicio();
+        LocalDate dataFim = filter.getDataFim();
+
+        Double valorTotal = calcularValorTotal(dataInicio, dataFim);
 
         atualizarStatusAlugada(moto);
+
+        StatusAluguel statusInicial = calculateStatus(dataInicio, dataFim);
 
         Aluguel aluguel = Aluguel.builder()
                 .usuario(usuario)
@@ -51,7 +65,7 @@ public class AluguelService {
                 .dataInicio(dataInicio)
                 .dataFim(dataFim)
                 .valorTotal(valorTotal)
-                .statusAluguel(StatusAluguel.ATIVO)
+                .statusAluguel(statusInicial)
                 .build();
 
         aluguelRepository.save(aluguel);
@@ -83,9 +97,14 @@ public class AluguelService {
     }
 
 
-    private Double calcularValorTotal(int dias) {
+    private Double calcularValorTotal(LocalDate dataInicio, LocalDate dataFim) {
+        long dias = Math.abs(ChronoUnit.DAYS.between(dataInicio, dataFim));
+
+        long diasAlugados = dias + 1;
+
         double valorDiario = 50;
-        return dias * valorDiario;
+
+        return diasAlugados * valorDiario;
     }
 
     private void atualizarStatusAlugada(Moto moto) {
@@ -96,5 +115,72 @@ public class AluguelService {
         motoRepository.save(moto);
     }
 
+    StatusAluguel calculateStatus(LocalDate dataInicio, LocalDate dataFim) {
+        LocalDate hoje = LocalDate.now();
+
+        if (hoje.isAfter(dataFim)) {
+            return StatusAluguel.INATIVO;
+        }
+
+
+        if (hoje.isEqual(dataInicio) || hoje.isAfter(dataInicio)) {
+            return StatusAluguel.ATIVO;
+        }
+
+        return StatusAluguel.PENDENTE;
+    }
+
+    public List<AluguelResponseDto> getAll() {
+        return aluguelRepository.findAll()
+                .stream()
+                .map(AluguelResponseDto::from)
+                .toList();
+    }
+
+
+    @Transactional
+    @Scheduled(fixedRate = 60000)
+    public void atualizarAlugueisVencidos() {
+        List<Aluguel> aluguelList = aluguelRepository.findAll();
+
+        for(Aluguel aluguel: aluguelList) {
+            if (aluguel.getStatusAluguel() == StatusAluguel.ATIVO && aluguel.getDataFim().isBefore(LocalDate.now())) {
+                aluguel.setStatusAluguel(StatusAluguel.INATIVO);
+                aluguelRepository.save(aluguel);
+            }
+        }
+    }
+
+    public List<AluguelResponseDto> findByUsuarioEmail(String email) {
+        return aluguelRepository.findByUsuarioEmail(email).stream().map(AluguelResponseDto::from).toList();
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Aluguel aluguel = aluguelRepository.findById(id)
+                .orElseThrow(NotFoundException.forAluguel());
+
+        if (aluguel.getStatusAluguel() == StatusAluguel.ATIVO) {
+            throw new IllegalStateException("Não é possível excluir aluguel com status ATIVO. O aluguel deve ser INATIVO.");
+        }
+
+        Moto moto = aluguel.getMoto();
+
+        atualizarStatusAtiva(moto);
+
+        aluguelRepository.delete(aluguel);
+    }
+
+    private void atualizarStatusAtiva(Moto moto) {
+        StatusMoto statusMoto = statusMotoRepository.findByStatus(StatusEnum.ATIVO)
+                .orElseThrow(() -> new RuntimeException("Status ATIVO/DISPONÍVEL não encontrado no banco de dados."));
+
+        moto.setStatus(statusMoto);
+        motoRepository.save(moto);
+    }
 
 }
+
+
+
+

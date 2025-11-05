@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Aluguel de Moto</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Realizar Novo Aluguel</h1>
+
+<div th:if="${mensagemSucesso}" style="color: green;">
+    <p th:text="${mensagemSucesso}"></p>
+</div>
+<div th:if="${mensagemErro}" style="color: red;">
+    <p th:text="${mensagemErro}"></p>
+</div>
+
+<form th:action="@{/aluguel}" th:object="${aluguelRequest}" method="post">
+
+    <div>
+        <label for="email">E-mail do Usuário:</label>
+        <input type="email" id="email" th:field="*{email}" required>
+    </div>
+
+    <div>
+        <label for="motoId">Selecione a Moto:</label>
+        <select id="motoId" th:field="*{motoId}" required>
+            <option value="" disabled selected>-- Escolha uma moto --</option>
+            <option th:each="m : ${motosDisponiveis}"
+                    th:value="${m.idMoto}"
+                    th:text="${m.nmChassi + ' - ' + m.placa}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="dataInicio">Data de Início:</label>
+        <input type="date"
+               id="dataInicio"
+               th:field="*{dataInicio}"
+               th:min="${dataMinima}"
+               required>
+    </div>
+
+    <div>
+        <label for="dataFim">Data Final (Prazo):</label>
+        <input type="date"
+               id="dataFim"
+               th:field="*{dataFim}"
+               th:min="${dataMinima}">
+    </div>
+
+
+
+<!--    <div>-->
+<!--        <label for="dias">Número de Dias:</label>-->
+<!--        <input type="number" id="dias" th:field="*{dias}" min="1" required>-->
+<!--    </div>-->
+
+    <div>
+        <button class="btn btn-save" type="submit">Alugar Moto</button>
+
+        <a class="btn btn-cancel" th:href="@{/home}">Home</a>
+    </div>
+
+
+</form>
+
+
+</body>
+</html>
+

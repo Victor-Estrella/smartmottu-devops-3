@@ -4,7 +4,12 @@ import br.com.fiap.smartmottu.dto.UsuarioRequestDto;
 import br.com.fiap.smartmottu.dto.UsuarioResponseDto;
 import br.com.fiap.smartmottu.entity.enuns.RoleEnum;
 import br.com.fiap.smartmottu.service.UsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,20 +37,20 @@ public class UsuarioController {
             model.addAttribute("users", List.of(usuarioLogado));
         }
 
-        return "list";
+        return "user-list";
     }
 
 
     @GetMapping("/new")
     public String newUsersForm(Model model) {
         model.addAttribute("usuario", new UsuarioRequestDto());
-        return "form";
+        return "user-form";
     }
 
     @PostMapping
     public String saveUser(@ModelAttribute("usuario") UsuarioRequestDto dto) {
         service.save(dto);
-        return "redirect:/login";
+        return "redirect:/";
     }
 
     @GetMapping("/{id}/edit")
@@ -55,12 +60,11 @@ public class UsuarioController {
         UsuarioRequestDto dto = new UsuarioRequestDto();
         dto.setNome(response.getNome());
         dto.setEmail(response.getEmail());
-        dto.setSenha(response.getSenha());
 
         model.addAttribute("usuario", dto);
         model.addAttribute("id", id);
 
-        return "form";
+        return "user-form";
     }
 
     @PutMapping("/{id}")
@@ -71,8 +75,24 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id, Principal principal, HttpServletResponse response, HttpServletRequest request) {
+        UsuarioResponseDto usuarioLogado = service.findByEmail(principal.getName());
+        Long idUsuarioLogado = usuarioLogado.getIdUsuario();
+
         service.delete(id);
+
+        if (id.equals(idUsuarioLogado)) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+            if (auth != null) {
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+            }
+
+            return "redirect:/logout";
+        }
+
         return "redirect:/users";
     }
+
 }
+
