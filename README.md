@@ -40,6 +40,29 @@ Fluxos principais:
 - Web App → Azure SQL Database: JDBC (TLS)
 - Web App → Application Insights: Telemetria (agent codeless)
 
+## Detalhamento dos Componentes (Requisito 3)
+
+| Nome do componente | Tipo | Descrição funcional | Tecnologia/Ferramenta |
+|---|---|---|---|
+| Repositório de código | SCM | Versionamento do código-fonte e integração com CI | GitHub (repo: smartmottu-devops-3) |
+| IDE | Ferramenta de desenvolvimento | Edição do código, commits e integração com Git | Visual Studio Code |
+| Linguagem e Framework | Backend | API/Pages MVC, regras de negócio e endpoints do CRUD | Java 17 + Spring Boot (MVC, Data JPA, Security, Thymeleaf) |
+| Gerenciador de Build | Build | Compila, resolve dependências e empacota | Maven (mvnw) |
+| Testes automatizados | Testes | Testes unitários de serviços e regras | JUnit 5 (Mockito quando aplicável) |
+| Banco de Dados | PaaS (DBaaS) | Persistência dos dados da aplicação | Azure SQL Database |
+| Acesso a dados/ORM | Biblioteca | Mapeamento ORM e repositórios | Spring Data JPA + JDBC Driver SQL Server |
+| Containerização | Empacotamento | Empacota a aplicação em imagem de contêiner | Docker (Dockerfile) |
+| Registro de Imagens | Registry | Armazena e versiona as imagens de contêiner | Azure Container Registry (ACR) |
+| Pipeline de CI | Orquestrador CI | Dispara a cada push na branch main/master; build, testes, publicação de artefato e build/push da imagem | Azure DevOps Pipelines (gatilho GitHub) |
+| Artefato de Build | Repositório de artefatos | Publicação do .jar e metadados do build | Azure DevOps Pipeline Artifacts |
+| Segredos/Variáveis | Gestão de segredos | Armazena variáveis protegidas (conn string, credenciais) | Azure DevOps Library (Variables/Variable Groups); opcional: Azure Key Vault |
+| Pipeline de CD | Orquestrador CD | Deploy automático do contêiner gerado para o serviço de aplicação | Azure DevOps Pipelines (Release/Multistage) |
+| Serviço de Aplicativo | PaaS (App) | Hospeda a aplicação em contêiner | Azure App Service — Web App for Containers (Linux) |
+| Plano de Serviço | Capacidade/Compute | Define SKU/escala do App Service | App Service Plan (ex.: B1/S1) |
+| Identidade/Permissões | Identidade | Permite a pipeline autenticar no Azure e no ACR | Azure Service Principal (Azure AD) |
+| Observabilidade | Logs/Monitoramento | Coleta de logs e métricas do App Service | Azure Monitor / App Service Logs (opcional: Application Insights) |
+| Endpoint público | Acesso | URL pública para acesso ao app | FQDN do Web App (https://<nome>.azurewebsites.net) |
+
 
 ## Provisionamento e Deploy (script)
 O script `deploy-smartmottu.sh` automatiza:
