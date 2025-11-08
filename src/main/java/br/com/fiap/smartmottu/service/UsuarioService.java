@@ -37,8 +37,11 @@ public class UsuarioService implements UserDetailsService {
                 .stream()
                 .map(usuario -> {
                     boolean temAluguel = aluguelRepository.existsByUsuario_IdUsuario(usuario.getIdUsuario());
+
                     return UsuarioResponseDto.from(usuario, temAluguel);
+
                 })
+
                 .toList();
     }
 

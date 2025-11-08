@@ -36,7 +36,7 @@
 
         <td>
 
-            <a th:href="@{/home}" class="btn btn-home">Home</a>
+            <a th:href="@{/}" class="btn btn-home">Home</a>
 
             <a class="btn btn-edit"
                th:href="@{/motos/{id}/edit(id=${m.idMoto})}">
@@ -45,6 +45,10 @@
         </td>
     </tr>
     </tbody>
+
+    <div th:if="${mensagemErro}" style="color: red; margin-top: 10px;">
+        <p th:text="${mensagemErro}"></p>
+    </div>
 </table>
 
 </body>

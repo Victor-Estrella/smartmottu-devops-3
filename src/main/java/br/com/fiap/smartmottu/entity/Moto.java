@@ -20,10 +20,10 @@ public class Moto {
     @Column(name = "id_moto")
     private Long idMoto;
 
-    @Column(name = "nm_chassi", length = 17, nullable = false)
+    @Column(name = "nm_chassi", length = 17, nullable = false, unique = true)
     private String nmChassi;
 
-    @Column(name = "placa", length = 7, nullable = false)
+    @Column(name = "placa", length = 7, nullable = false, unique = true)
     private String placa;
 
     @Column(name = "unidade", length = 100)

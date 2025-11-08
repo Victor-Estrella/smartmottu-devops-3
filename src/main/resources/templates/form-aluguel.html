@@ -8,13 +8,6 @@
 <body>
 <h1>Realizar Novo Aluguel</h1>
 
-<div th:if="${mensagemSucesso}" style="color: green;">
-    <p th:text="${mensagemSucesso}"></p>
-</div>
-<div th:if="${mensagemErro}" style="color: red;">
-    <p th:text="${mensagemErro}"></p>
-</div>
-
 <form th:action="@{/aluguel}" th:object="${aluguelRequest}" method="post">
 
     <div>
@@ -50,19 +43,15 @@
                th:min="${dataMinima}">
     </div>
 
-
-
-<!--    <div>-->
-<!--        <label for="dias">Número de Dias:</label>-->
-<!--        <input type="number" id="dias" th:field="*{dias}" min="1" required>-->
-<!--    </div>-->
-
     <div>
         <button class="btn btn-save" type="submit">Alugar Moto</button>
 
-        <a class="btn btn-cancel" th:href="@{/home}">Home</a>
+        <a class="btn btn-cancel" th:href="@{/}">Home</a>
     </div>
 
+    <div th:if="${mensagemErro}" style="color: red; margin-top: 10px;">
+        <p th:text="${mensagemErro}"></p>
+    </div>
 
 </form>
 

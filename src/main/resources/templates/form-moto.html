@@ -61,6 +61,10 @@
         </button>
         <a th:href="@{/motos}" class="btn btn-cancel">Cancelar</a>
     </div>
+
+    <div th:if="${mensagemErro}" style="color: red; margin-top: 10px;">
+        <p th:text="${mensagemErro}"></p>
+    </div>
 </form>
 
 </body>

@@ -37,7 +37,7 @@
     <td th:text="${a.statusAluguel}"></td>
 
     <td>
-      <a th:href="@{/home}" class="btn btn-home">Home</a>
+      <a th:href="@{/}" class="btn btn-home">Home</a>
 
       <th:block th:with="StatusAluguel=${T(br.com.fiap.smartmottu.entity.enuns.StatusAluguel)}">
 
@@ -61,6 +61,11 @@
     </td>
   </tr>
   </tbody>
+
+  <div th:if="${mensagemErro}" style="color: red; margin-top: 10px;">
+    <p th:text="${mensagemErro}"></p>
+  </div>
+
 </table>
 
 </body>

@@ -1,6 +1,5 @@
 package br.com.fiap.smartmottu.repository;
 
-import br.com.fiap.smartmottu.dto.AluguelResponseDto;
 import br.com.fiap.smartmottu.entity.Aluguel;
 import br.com.fiap.smartmottu.entity.Usuario;
 import br.com.fiap.smartmottu.entity.enuns.StatusAluguel;
