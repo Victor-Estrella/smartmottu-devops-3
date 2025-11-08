@@ -51,31 +51,29 @@ Fluxos principais:
 | Testes automatizados | Testes | Testes unitários de serviços e regras | JUnit 5 (Mockito quando aplicável) |
 | Banco de Dados | PaaS (DBaaS) | Persistência dos dados da aplicação | Azure SQL Database |
 | Acesso a dados/ORM | Biblioteca | Mapeamento ORM e repositórios | Spring Data JPA + JDBC Driver SQL Server |
-| Containerização | Empacotamento | Empacota a aplicação em imagem de contêiner | Docker (Dockerfile) |
-| Registro de Imagens | Registry | Armazena e versiona as imagens de contêiner | Azure Container Registry (ACR) |
 | Pipeline de CI | Orquestrador CI | Dispara a cada push na branch main/master; build, testes, publicação de artefato e build/push da imagem | Azure DevOps Pipelines (gatilho GitHub) |
 | Artefato de Build | Repositório de artefatos | Publicação do .jar e metadados do build | Azure DevOps Pipeline Artifacts |
 | Segredos/Variáveis | Gestão de segredos | Armazena variáveis protegidas (conn string, credenciais) | Azure DevOps Library (Variables/Variable Groups); opcional: Azure Key Vault |
 | Pipeline de CD | Orquestrador CD | Deploy automático do contêiner gerado para o serviço de aplicação | Azure DevOps Pipelines (Release/Multistage) |
 | Serviço de Aplicativo | PaaS (App) | Hospeda a aplicação em contêiner | Azure App Service — Web App for Containers (Linux) |
-| Plano de Serviço | Capacidade/Compute | Define SKU/escala do App Service | App Service Plan (ex.: B1/S1) |
-| Identidade/Permissões | Identidade | Permite a pipeline autenticar no Azure e no ACR | Azure Service Principal (Azure AD) |
-| Observabilidade | Logs/Monitoramento | Coleta de logs e métricas do App Service | Azure Monitor / App Service Logs (opcional: Application Insights) |
-| Endpoint público | Acesso | URL pública para acesso ao app | FQDN do Web App (https://<nome>.azurewebsites.net) |
+| Endpoint público | Acesso | URL pública para acesso ao app | FQDN do Web App (https://app-pt-rm556206.azurewebsites.net) |
 
 
-## Provisionamento e Deploy (script)
-O script `deploy-smartmottu.sh` automatiza:
-1) Criação de Resource Group, App Service Plan (Linux) e Web App
-2) Criação de Azure SQL Server + Database
-3) Configuração de App Settings no Web App (ex.: SPRING_DATASOURCE_URL/USERNAME/PASSWORD, PORT)
-4) Aplicação de DDL/DML no Azure SQL via `sqlcmd` (criação de tabelas/constraints e seed inicial)
+## Provisionamento e Deploy (scripts)
+O script `sprint4.sh` automatiza o provisionamento completo no Azure:
+1) Criação dos Resource Groups (App e DB)
+2) Criação do Azure SQL Server + Database
+3) Execução do `script_bd.sql` via `sqlcmd` (DDL completa e seed inicial)
+4) Criação do App Service Plan (Linux) e do Web App Java 17
+5) Configuração das App Settings (string de conexão e variáveis do Spring)
 
-Notas:
-- O seed cria apenas o usuário ADMIN com senha `admin123`.
+Notas importantes:
+- O arquivo `script_bd.sql` é executado pelo `sprint4.sh` (flag `sqlcmd -i`) para evitar expansão de `$` e manter o hash BCrypt da senha.
+- O seed cria o usuário ADMIN com senha padrão `admin123`, armazenada como hash BCrypt (`$2a$10$veKob3hpyAUsj3R7x4QFgOc8R4I6DrHU9aTmANETcCq.Xgy4NCgmW`).
+- Substitua as variáveis `SQL_ADMIN_USER`, `SQL_ADMIN_PASSWORD` e o hash no `script_bd.sql` antes de usar em produção.
 - O script requer Azure CLI autenticada (`az login`) e `bash`. Para executar DDL/DML, requer `sqlcmd` (ou use Azure Cloud Shell Bash).
 
-DDL completo e comentado: consulte `script_bd.sql` na raiz do projeto.
+Caso prefira apenas provisionar o banco/manual, execute `script_bd.sql` diretamente com `sqlcmd -S <server>.database.windows.net -d <db> -U <user> -P <senha> -N -b -i script_bd.sql`.
 
 ## Passo a passo (Azure)
 1) Pré-requisitos
@@ -84,11 +82,11 @@ DDL completo e comentado: consulte `script_bd.sql` na raiz do projeto.
 
 2) Executar o deploy
 ```bash
-./deploy-smartmottu.sh
+./sprint4.sh
 ```
 
 3) Após o deploy
-- Acessar: `https://SEU-APP.azurewebsites.net` (nesse caso é `https://smartmottu-api.azurewebsites.net`)
+- Acessar: `https://SEU-APP.azurewebsites.net` (nesse caso é `https://app-pt-rm556206.azurewebsites.net`)
 
 - Login DEV: `admin@email.com` / `admin123`
 - Logout: GET `/logout`
@@ -111,17 +109,17 @@ Você pode visualizar e consultar o banco provisionado no Azure SQL de duas form
 	 - Abra o recurso do SQL Database no Portal Azure
 	 - Clique em "Query editor (preview) ou Editor de consultas"
 	 - Autenticação: SQL Login
-		 - Usuário: valor da variável `DB_USERNAME` definida no `deploy-smartmottu.sh`
-		 - Senha: valor da variável `DB_PASSWORD` ("db-password" do script)
+		 - Usuário: valor da variável `SQL_ADMIN_USER` definida no `sprint4.sh`
+		 - Senha: valor da variável `SQL_ADMIN_PASSWORD`
 	 - Exemplos de consulta:
 		 - `SELECT TOP 10 * FROM T_SMARTMOTTU_USUARIO;`
 		 - `SELECT TOP 10 * FROM T_SMARTMOTTU_MOTO;`
 
-Variáveis úteis no `deploy-smartmottu.sh`:
+Variáveis úteis no `sprint4.sh`:
 - `SERVER_NAME`: nome do servidor lógico do Azure SQL (ex.: `sql-server-smartmottu`)
 - `DB_NAME`: nome do banco (ex.: `db-smartmottu`)
-- `DB_USERNAME`: usuário admin SQL (ex.: `user-smartmottu`)
-- `DB_PASSWORD`: senha do admin SQL ("db-password" do script)
+- `SQL_ADMIN_USER`: usuário admin SQL (ex.: `user-smartmottu`)
+- `SQL_ADMIN_PASSWORD`: senha do admin SQL (substitua em produção)
 
 ## Testes via HTTP (opcional)
 Como a aplicação usa login por formulário, recomenda-se testar via navegador. Ainda assim, segue um roteiro opcional:
@@ -129,5 +127,5 @@ Como a aplicação usa login por formulário, recomenda-se testar via navegador.
 - Enviar POST de criação de moto para `/motos` com os campos `nmChassi`, `placa`, `unidade`, `statusId`, `modeloId` usando cookies de sessão (complexo com curl; para demonstração use o navegador)
 
 ## Vídeo & Repositório
-- Vídeo demonstrativo (passo a passo): https://youtu.be/7t5AVv5gmB4
+- Vídeo demonstrativo (passo a passo): https://youtu.be/FLnzPDp5jYs
 - Repositório: https://github.com/Victor-Estrella/smartmottu-devops-3
