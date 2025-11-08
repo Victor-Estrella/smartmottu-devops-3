@@ -2,6 +2,7 @@
 
 Aplicação web Java (Spring Boot 3, Java 17) com front Thymeleaf, hospedada no Azure App Service (Linux) e banco de dados no Azure SQL Database.
 
+
 ## Introdução
 A Mottu é uma empresa de aluguel de motos a baixo custo (R$26,40/dia),
 oferecendo não só o veículo, mas também crédito, manutenção, assistência,
@@ -32,13 +33,8 @@ do trabalho dos operadores.
 
 ## Arquitetura da solução
 
-![Arquitetura](docs/arquitetura.jpg)
+![Arquitetura](docs/arquitetura.png)
 
-Fluxos principais:
-- GitHub Actions → Web App: Deploy (CI/CD)
-- Browser → Web App: HTTP/HTTPS
-- Web App → Azure SQL Database: JDBC (TLS)
-- Web App → Application Insights: Telemetria (agent codeless)
 
 ## Detalhamento dos Componentes (Requisito 3)
 
